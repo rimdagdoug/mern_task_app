@@ -1,13 +1,11 @@
-import express from "express";
-import mongoose from "mongoose";
-import connectDB from "./config/connectDB.js";
-import dotenv from "dotenv";
-import { fileURLToPath } from "url";
-import path from "path";
-import { log } from "console";
+const express = require("express");
+const mongoose = require("mongoose");
+const connectDB = require("./config/connectDB.js");
+const dotenv = require("dotenv");
+const path = require("path"); 
+const Task = require("./model/taskModel.js");
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 dotenv.config({ path: path.join(__dirname, "../.env") });
 
@@ -17,23 +15,21 @@ const app = express();
 connectDB();
 
 app.use(express.json());
-//Middleware
-// const logger = (req,res,next) => {
-//   console.log("Middleware ran");
-//   console.log(req.method);
-//   next();
-// };
+app.use(express.urlencoded({ extended: false }));
 
-
-//Routes
-app.get("/", (req,res) => {
+// Routes
+app.get("/", (req, res) => {
   res.send("Home page")
 });
 
 // Create a task
-app.post("/api/tasks", async(req,res) =>{
-  console.log(req.body)
-  res.send("Task created")
+app.post("/api/tasks", async (req, res) => {
+  try {
+    const task = await Task.create(req.body);
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
 });
 
 const PORT = process.env.PORT || 7000;
