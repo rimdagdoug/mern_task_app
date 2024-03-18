@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "type": "commonjs", 
+  "type": "commonjs",
   "scripts": {
     "start": "node backend/server.js",
-    "backend": "nodemon backend/server.js"
+    "backend": "nodemon backend/server.js",
+    "frontend": "npm start --prefix frontend",
+    "both": "concurrently \"npm run backend\" \"npm run frontend\""
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,7 @@
     "mongoose": "^8.2.2"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "nodemon": "^3.1.0"
   }
 }
