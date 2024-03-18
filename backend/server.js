@@ -4,6 +4,7 @@ const connectDB = require("./config/connectDB.js");
 const dotenv = require("dotenv");
 const path = require("path"); 
 const Task = require("./model/taskModel.js");
+const taskRoutes= require("./routes/taskRoute.js");
 
 
 
@@ -13,34 +14,19 @@ const app = express();
 
 // Call connectDB to establish database connection
 connectDB();
-
+//Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(taskRoutes);
 
 // Routes
 app.get("/", (req, res) => {
   res.send("Home page")
 });
 
-// Create a task
-app.post("/api/tasks", async (req, res) => {
-  try {
-    const task = await Task.create(req.body);
-    res.status(200).json(task);
-  } catch (error) {
-    res.status(500).json({ msg: error.message });
-  }
-});
 
-//Get request
-app.get("/api/tasks", async(req,res) => {
-  try {
-      const tasks = await Task.find();
-      res.status(200).json(tasks);
-  } catch (error) {
-    res.status(500).json({msg: error.message});
-  }
-});
+
+
 
 //
 
