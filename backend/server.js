@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const connectDB = require("./config/connectDB.js");
 const dotenv = require("dotenv");
 const path = require("path"); 
-const Task = require("./model/taskModel.js");
+const Task = require("./models/taskModel.js");
 const taskRoutes= require("./routes/taskRoute.js");
 
 
