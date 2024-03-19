@@ -1,17 +1,16 @@
 //useState est un hook qui permet aux composants 
 //fonctionnels de React de gérer leur propre état.
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Task from "./Task"
 import TaskForm from "./TaskForm"
 import { toast } from "react-toastify"
 import axios from "axios"
+import loadingImg from "../assets/loader.gif";
 
 const TaskList = () => {
-  //useState renvoie un tableau où le premier 
-  //élément est la valeur actuelle de l'état
-  // (formData dans ce cas) et le second élément
-  // est une fonction (setFormData) pour mettre
-  // à jour cet état
+  const [tasks, setTasks] = useState([])
+  const [completedTasks, setCompletedTasks] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState(
     {
       name:"",
@@ -25,13 +24,30 @@ const TaskList = () => {
     const {name,value} = e.target
     setFormData({...formData,[name]: value})
   };
+
+  const getTasks= async ()=> {
+    setIsLoading(true)
+    try {
+     const {data}= await axios.get("/api/tasks");
+     setTasks(data);
+     setIsLoading(false)
+    } catch (error) {
+      toast.error(error.message)
+      setIsLoading(false)
+    }
+  };
+
+  useEffect(() => {
+    getTasks()
+  },[])
+
   const createTask = async(e) => {
     e.preventDefault();
     if (name === "") {
       return toast.error("Input filed cannot be empty")
     }
     try {
-      await axios.post("http://localhost:8000/api/tasks", formData);
+      await axios.post("/api/tasks", formData);
       toast.success("Task added successfuly");
       setFormData({...formData,name:""});
     } catch (error) {
@@ -54,7 +70,30 @@ const TaskList = () => {
         </p>
       </div>
       <hr></hr>
-      <Task></Task>
+      {isLoading && (
+        <div className="--flex-center">
+          <img src={loadingImg} alt="loading"/>
+        </div>
+      )}
+
+      {
+        !isLoading && tasks.length ===0 ? (
+          <p className="--py">No Task added. Please add a Task</p>
+        ) : (
+          <>
+          {
+            tasks.map((task, index) => {
+              return (
+                <Task key={task._id} task={task} index={index}/>
+              )
+            })
+              
+          }
+          </>
+        )
+      }
+      
+     
     </div>
     
   )
