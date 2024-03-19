@@ -54,6 +54,15 @@ const TaskList = () => {
       toast.error(error.message)
     }
   };
+  const deleteTask = async (id) => {
+    try {
+      await axios.delete(`/api/tasks/${id}`);
+      getTasks();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <div>
       <h2>Task Manager</h2>
@@ -84,7 +93,7 @@ const TaskList = () => {
           {
             tasks.map((task, index) => {
               return (
-                <Task key={task._id} task={task} index={index}/>
+                <Task key={task._id} task={task} index={index} deleteTask={deleteTask}/>
               )
             })
               
