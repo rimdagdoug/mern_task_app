@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const path = require("path"); 
 const Task = require("./models/taskModel.js");
 const taskRoutes= require("./routes/taskRoute.js");
+const cors=require("cors");
 
 
 
@@ -17,6 +18,8 @@ connectDB();
 //Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use(cors());
 app.use("/api/tasks",taskRoutes);
 
 // Routes
@@ -25,10 +28,6 @@ app.get("/", (req, res) => {
 });
 
 
-
-
-
-//
 
 const PORT = process.env.PORT || 7000;
 
